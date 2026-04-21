@@ -201,6 +201,37 @@ export default class AnimationManager extends EventListener {
 
 			let midLevel = document.createElement('tr');
 			let bottomLevel = document.createElement('td');
+			bottomLevel.className = 'animation-playback-cell';
+			const playbackWrap = document.createElement('div');
+			playbackWrap.className = 'animation-playback-buttons';
+
+			const pausePlayBtn = document.createElement('input');
+			pausePlayBtn.type = 'button';
+			pausePlayBtn.value = 'Pause';
+			pausePlayBtn.className = 'animation-control-btn pause';
+			pausePlayBtn.title = 'Pause after each step so you can read captions';
+			pausePlayBtn.addEventListener('click', this.doPlayPause.bind(this));
+			this.playPauseBackButton = pausePlayBtn;
+			playbackWrap.appendChild(pausePlayBtn);
+
+			const stepBtn = document.createElement('input');
+			stepBtn.type = 'button';
+			stepBtn.value = 'Next step';
+			stepBtn.className = 'animation-control-btn';
+			stepBtn.title = 'While paused, advance one step (next caption / motion)';
+			stepBtn.disabled = true;
+			stepBtn.addEventListener('click', () => {
+				this.step();
+			});
+			this.stepForwardButton = stepBtn;
+			playbackWrap.appendChild(stepBtn);
+
+			bottomLevel.appendChild(playbackWrap);
+			midLevel.appendChild(bottomLevel);
+			newTable.appendChild(midLevel);
+
+			midLevel = document.createElement('tr');
+			bottomLevel = document.createElement('td');
 			bottomLevel.classList.add('slider');
 			midLevel.appendChild(bottomLevel);
 
@@ -238,6 +269,8 @@ export default class AnimationManager extends EventListener {
 			/* ignore */
 		}
 		this.speedControlRoot = null;
+		this.playPauseBackButton = null;
+		this.stepForwardButton = null;
 		if (this.speedMountWrapper?.parentNode) {
 			this.speedMountWrapper.parentNode.removeChild(this.speedMountWrapper);
 		}
@@ -637,6 +670,8 @@ export default class AnimationManager extends EventListener {
 						this.currentAnimation < this.animationSteps.length
 					) {
 						this.awaitingStep = true;
+						this.currentlyAnimating = false;
+						this.stopTimer();
 						this.fireEvent('AnimationWaiting', 'NoData');
 						this.currentBlock = [];
 					} else {
@@ -651,16 +686,25 @@ export default class AnimationManager extends EventListener {
 	animWaiting() {
 		this.objectManager.statusReport.setText('Animation Paused');
 		this.objectManager.statusReport.setForegroundColor('#FF0000');
+		if (this.stepForwardButton) {
+			this.stepForwardButton.disabled = false;
+		}
 	}
 
 	animStarted() {
 		this.objectManager.statusReport.setText('Animation Running');
 		this.objectManager.statusReport.setForegroundColor('#009900');
+		if (this.stepForwardButton) {
+			this.stepForwardButton.disabled = true;
+		}
 	}
 
 	animEnded() {
 		this.objectManager.statusReport.setText('Animation Completed');
 		this.objectManager.statusReport.setForegroundColor('#000000');
+		if (this.stepForwardButton) {
+			this.stepForwardButton.disabled = true;
+		}
 	}
 
 	animUndoUnavailable() {}
@@ -694,7 +738,7 @@ export default class AnimationManager extends EventListener {
 	}
 
 	stopTimer() {
-		clearInterval(this.timer);
+		clearTimeout(this.timer);
 	}
 }
 

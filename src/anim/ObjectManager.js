@@ -45,6 +45,7 @@ import AnimatedLine from './AnimatedLine';
 import AnimatedLinkedListNode from './AnimatedLinkedListNode';
 import AnimatedRectangle from './AnimatedRectangle';
 import AnimatedSkipListNode from './AnimatedSkipListNode';
+import { CAPTION_FONT_PX } from '../visualizationConstants.js';
 
 export default class ObjectManager {
 	constructor(canvasRef) {
@@ -482,8 +483,8 @@ export default class ObjectManager {
 	wrapStatusCaption(text) {
 		const s = String(text);
 		if (!s) return s;
-		const maxW = this.width > 80 ? Math.min(580, this.width * 0.92) : 420;
-		this.ctx.font = '12px Arial';
+		const maxW = this.width > 80 ? Math.min(640, this.width * 0.9) : 420;
+		this.ctx.font = `${CAPTION_FONT_PX}px Arial`;
 		if (this.ctx.measureText(s).width <= maxW && s.indexOf('\n') === -1) {
 			return s;
 		}
@@ -524,12 +525,14 @@ export default class ObjectManager {
 		return lines.join('\n');
 	}
 
-	getTextWidth(text, isCode, isPointer) {
+	getTextWidth(text, isCode, isPointer, isStatusCaption = false) {
 		// TODO:  Need to make fonts more flexible, and less hardwired.
 		if (isCode) {
 			this.ctx.font = '13px "Source Code Pro", monospace';
 		} else if (isPointer) {
 			this.ctx.font = '16px Arial';
+		} else if (isStatusCaption) {
+			this.ctx.font = `${CAPTION_FONT_PX}px Arial`;
 		} else {
 			this.ctx.font = '12px Arial';
 		}
@@ -554,7 +557,12 @@ export default class ObjectManager {
 		if (nodeID === 0) {
 			t = this.wrapStatusCaption(t);
 		}
-		this.nodes[nodeID].setText(t, index, this.getTextWidth(t));
+		const n = this.nodes[nodeID];
+		this.nodes[nodeID].setText(
+			t,
+			index,
+			this.getTextWidth(t, n.isCode, n.isPointer, nodeID === 0),
+		);
 	}
 
 	getText(nodeID, index) {
@@ -809,7 +817,7 @@ export default class ObjectManager {
 			objectID,
 			objectLabel,
 			centering,
-			this.getTextWidth(objectLabel, isCode, isPointer),
+			this.getTextWidth(objectLabel, isCode, isPointer, objectID === 0),
 			isCode,
 			isPointer,
 		);

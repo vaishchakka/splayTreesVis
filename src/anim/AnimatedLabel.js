@@ -26,6 +26,7 @@
 
 import AnimatedObject from './AnimatedObject.js';
 import { UndoBlock } from './UndoFunctions.js';
+import { CAPTION_FONT_PX, CAPTION_LINE_GAP_PX } from '../visualizationConstants.js';
 
 export default class AnimatedLabel extends AnimatedObject {
 	constructor(objectID, label, centered, initialWidth, isCode, isPointer) {
@@ -83,10 +84,13 @@ export default class AnimatedLabel extends AnimatedObject {
 
 		context.globalAlpha = this.alpha;
 
+		const isCaption = this.objectID === 0;
 		if (this.isCode) {
 			context.font = '13px "Source Code Pro", monospace';
 		} else if (this.isPointer) {
 			context.font = '16px Arial';
+		} else if (isCaption) {
+			context.font = `${CAPTION_FONT_PX}px Arial`;
 		} else {
 			context.font = '12px Arial';
 		}
@@ -153,7 +157,7 @@ export default class AnimatedLabel extends AnimatedObject {
 				);
 			}
 		} else {
-			const lineGap = 15;
+			const lineGap = isCaption ? CAPTION_LINE_GAP_PX : 15;
 			const y0 = this.centered ? this.y - ((strList.length - 1) * lineGap) / 2 : this.y;
 			for (let i = 0; i < strList.length; i++) {
 				context.fillText(strList[i], this.x, y0 + i * lineGap);

@@ -26,6 +26,7 @@
 
 import AnimatedObject from './AnimatedObject';
 import { UndoBlock } from './UndoFunctions';
+import { NODE_KEY_FONT_PX } from '../visualizationConstants.js';
 
 export default class AnimatedCircle extends AnimatedObject {
 	constructor(objectID, label) {
@@ -86,7 +87,7 @@ export default class AnimatedCircle extends AnimatedObject {
 		context.stroke();
 
 		context.textAlign = 'center';
-		context.font = '12px Arial';
+		context.font = `${NODE_KEY_FONT_PX}px Arial`;
 		context.textBaseline = 'middle';
 		context.lineWidth = 2;
 		context.fillStyle = this.foregroundColor;
@@ -128,16 +129,18 @@ export default class AnimatedCircle extends AnimatedObject {
 			}
 		} else if (strList.length % 2 === 0) {
 			const mid = strList.length / 2;
+			const lineStep = NODE_KEY_FONT_PX + 2;
 			for (let i = 0; i < strList.length / 2; i++) {
-				context.fillText(strList[mid - i - 1], this.x, this.y - (i + 0.5) * 12);
-				context.fillText(strList[mid + i], this.x, this.y + (i + 0.5) * 12);
+				context.fillText(strList[mid - i - 1], this.x, this.y - (i + 0.5) * lineStep);
+				context.fillText(strList[mid + i], this.x, this.y + (i + 0.5) * lineStep);
 			}
 		} else {
 			const mid = (strList.length - 1) / 2;
+			const lineStep = NODE_KEY_FONT_PX + 2;
 			context.fillText(strList[mid], this.x, this.y);
 			for (let i = 0; i < mid; i++) {
-				context.fillText(strList[mid - (i + 1)], this.x, this.y - (i + 1) * 12);
-				context.fillText(strList[mid + (i + 1)], this.x, this.y + (i + 1) * 12);
+				context.fillText(strList[mid - (i + 1)], this.x, this.y - (i + 1) * lineStep);
+				context.fillText(strList[mid + (i + 1)], this.x, this.y + (i + 1) * lineStep);
 			}
 		}
 	}

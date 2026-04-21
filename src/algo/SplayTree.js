@@ -34,6 +34,18 @@ import {
 	dispatchMemoryUi,
 	getNarration,
 } from '../memoryTheme.js';
+import {
+	DUAL_FOREST_CENTER_LEFT,
+	DUAL_FOREST_CENTER_RIGHT,
+	HEIGHT_DELTA,
+	NODE_CIRCLE_WIDTH_DEEP,
+	NODE_CIRCLE_WIDTH_ROOT,
+	NODE_CIRCLE_WIDTH_SHALLOW,
+	OFFSCREEN_BUILD_OFFSET,
+	STARTING_Y,
+	STATUS_CAPTION_CENTER_Y,
+	WIDTH_DELTA,
+} from '../visualizationConstants.js';
 
 /** Remembrall-inspired palette: calm silver glass, green on recall, yellow on encode, scarlet on forget / “something’s missing”. */
 const LINK_COLOR = '#475569';
@@ -52,10 +64,6 @@ const REMEMBRALL_MERGED_ROOT_RING = '#38bdf8';
 const REMEMBRALL_RECALL_NODE_FILL = '#bbf7d0';
 const REMEMBRALL_ACCESS_MISS_NODE_FILL = '#fecaca';
 const REMEMBRALL_FORGET_NODE_FILL = '#fca5a5';
-const WIDTH_DELTA = 68;
-const HEIGHT_DELTA = 58;
-/** Root row Y — leave room above for captions + corner “college memories” label (DOM). */
-const STARTING_Y = 158;
 /** Club keys (left tree) are always less than academic keys (right tree). */
 
 export default class SplayTree extends Algorithm {
@@ -78,7 +86,7 @@ export default class SplayTree extends Algorithm {
 			0,
 			'',
 			Math.floor(this.canvasWidth / 2),
-			28,
+			STATUS_CAPTION_CENTER_Y,
 			true,
 		);
 		this.nextIndex = 1;
@@ -240,7 +248,7 @@ export default class SplayTree extends Algorithm {
 		const row = entries[mid];
 		const id = this.nextIndex++;
 		const label = String(row.key);
-		const offY = STARTING_Y + 420;
+		const offY = STARTING_Y + OFFSCREEN_BUILD_OFFSET;
 		this.cmd(act.createCircle, id, label, this.startingX, offY);
 		this.cmd(act.setForegroundColor, id, FOREGROUND_COLOR);
 		this.cmd(act.setBackgroundColor, id, NODE_FILL_DEFAULT);
@@ -334,8 +342,8 @@ export default class SplayTree extends Algorithm {
 
 	syncForestLayout() {
 		if (this.treeRoot != null && this.treeRootRight != null) {
-			this.layoutSingleForest(this.treeRoot, this.canvasWidth * 0.26);
-			this.layoutSingleForest(this.treeRootRight, this.canvasWidth * 0.72);
+			this.layoutSingleForest(this.treeRoot, this.canvasWidth * DUAL_FOREST_CENTER_LEFT);
+			this.layoutSingleForest(this.treeRootRight, this.canvasWidth * DUAL_FOREST_CENTER_RIGHT);
 			this.applyMemoryDepthStyleCommands();
 			this.cmd(act.step);
 			return;
@@ -946,7 +954,12 @@ export default class SplayTree extends Algorithm {
 		const walk = (node, depth) => {
 			if (node == null) return;
 			const label = this.circleLabelForNode(node);
-			const width = depth === 0 ? 58 : depth >= 3 ? 38 : 48;
+			const width =
+				depth === 0
+					? NODE_CIRCLE_WIDTH_ROOT
+					: depth >= 3
+						? NODE_CIRCLE_WIDTH_DEEP
+						: NODE_CIRCLE_WIDTH_SHALLOW;
 			const alpha = depth >= 3 ? 0.65 : 1;
 			const bg = depth === 0 ? NODE_FILL_ROOT : NODE_FILL_DEFAULT;
 			this.cmd(act.setText, node.graphicID, label);

@@ -161,8 +161,8 @@ body {
 .splay-visualization-app .algo-control-speed {
 	flex: 0 0 auto;
 	margin-left: auto;
-	width: min(220px, 38vw);
-	min-width: 150px;
+	width: min(280px, 42vw);
+	min-width: 200px;
 	max-width: 100%;
 	padding: 0 0 0 8px;
 }
@@ -177,6 +177,49 @@ body {
 	color: var(--primary) !important;
 	font-size: 11px;
 	opacity: 0.85;
+}
+
+.splay-visualization-app .animation-playback-cell {
+	padding: 0 0 4px;
+}
+
+.splay-visualization-app .animation-playback-buttons {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+	gap: 8px;
+	align-items: center;
+}
+
+.splay-visualization-app .animation-control-btn {
+	font: inherit;
+	font-size: 13px;
+	padding: 6px 12px;
+	border: 1px solid var(--border);
+	border-radius: 6px;
+	background: var(--button);
+	color: var(--primary);
+	cursor: pointer;
+	box-shadow: 0 1px 2px var(--shadow);
+}
+
+.splay-visualization-app .animation-control-btn:hover:not(:disabled) {
+	filter: var(--filter);
+}
+
+.splay-visualization-app .animation-control-btn:disabled {
+	opacity: 0.45;
+	cursor: not-allowed;
+}
+
+.splay-visualization-app .animation-control-btn.pause {
+	border-color: #c62828;
+	color: #b71c1c;
+}
+
+.splay-visualization-app .animation-control-btn.play {
+	border-color: #2e7d32;
+	color: #1b5e20;
 }
 
 .splay-visualization-app .algo-control-speed .MuiSlider-root {
