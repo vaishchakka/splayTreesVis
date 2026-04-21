@@ -13,7 +13,9 @@ Encoding happens by associating a memory with a certain key. This key can repres
 
 After running the project, the website shows a control bar where users can perform different splay tree operations, such as adding a memory, deleting a memory, or splitting a joined memory group into two separate groups.
 
-Each operation has its own associated color. If a user wants a more detailed understanding of what is happening, they can decrease the animation speed to watch the operation more closely.
+Each operation has its own associated color. Red for forget memory, green for recalling a memory, and the default graph node root should be grey. 
+
+If a user wants a more detailed understanding of what is happening, they can decrease the animation speed to watch the operation more closely. You can also use the Pause and Next Step buttons to see the captions more closely and see what exactly is happening if the animation speed isn't enough (at times the text can move quite fast)
 
 There are also default splay trees provided for the merge operation. One memory group is related to academics, and another is related to campus activities. When these two splay trees are merged, they form one splay tree representing college memories.
 
